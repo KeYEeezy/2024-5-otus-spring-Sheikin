@@ -11,9 +11,11 @@ import ru.otus.hw.exceptions.QuestionReadException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class CsvQuestionDao implements QuestionDao {
@@ -39,12 +41,10 @@ public class CsvQuestionDao implements QuestionDao {
         return questions;
     }
 
-    public InputStreamReader getResource(String fileName) {
+    private InputStreamReader getResource(String fileName) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(fileName);
-        try {
-            return new InputStreamReader(classPathResource.getInputStream());
-        } catch (IOException e) {
-            throw new QuestionReadException("Error reading file: " + fileName, e);
-        }
+        InputStream inputStream = classPathResource.getInputStream();
+        Objects.requireNonNull(inputStream, "Input stream is null for file: " + fileName);
+        return new InputStreamReader(inputStream);
     }
 }
