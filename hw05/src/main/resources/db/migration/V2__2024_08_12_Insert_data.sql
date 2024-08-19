@@ -1,8 +1,8 @@
 insert into authors(full_name)
-values ('Author_1'), ('Author_2'), ('Author_3');
+values ('Fyodor Dostoevsky'), ('Ursula Kroeber Le Guin'), ('Sergei Lukyanenko');
 
 insert into genres(name)
-values ('Genre_1'), ('Genre_2'), ('Genre_3');
+values ('Novel'), ('Fantasy'), ('SciFi');
 
 insert into books(title, author_id, genre_id)
-values ('BookTitle_1', 1, 1), ('BookTitle_2', 2, 2), ('BookTitle_3', 3, 3);
+values ('Crime and Punishment', 1, 1), ('A Wizard of Earthsea', 2, 2), ('Labyrinth of Reflections', 3, 3);
