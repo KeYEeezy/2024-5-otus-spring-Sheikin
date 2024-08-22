@@ -14,7 +14,6 @@ import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,21 +104,27 @@ class JdbcBookRepositoryTest {
     }
 
     private static List<Author> getDbAuthors() {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Author(id, "Author_" + id))
-                .toList();
+        return List.of(
+                new Author(1, "Fyodor Dostoevsky"),
+                new Author(2, "Ursula Kroeber Le Guin"),
+                new Author(3, "Sergei Lukyanenko")
+        );
     }
 
     private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Genre(id, "Genre_" + id))
-                .toList();
+        return List.of(
+                new Genre(1, "Novel"),
+                new Genre(2, "Fantasy"),
+                new Genre(3, "SciFi")
+        );
     }
 
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Book(id, "BookTitle_" + id, dbAuthors.get(id - 1), dbGenres.get(id - 1)))
-                .toList();
+        return List.of(
+                new Book(1, "Crime and Punishment", getDbAuthors().get(0), getDbGenres().get(0)),
+                new Book(2, "A Wizard of Earthsea", getDbAuthors().get(1), getDbGenres().get(1)),
+                new Book(3, "Labyrinth of Reflections", getDbAuthors().get(2), getDbGenres().get(2))
+        );
     }
 
     private static List<Book> getDbBooks() {
