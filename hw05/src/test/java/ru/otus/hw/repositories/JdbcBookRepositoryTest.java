@@ -121,9 +121,9 @@ class JdbcBookRepositoryTest {
 
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return List.of(
-                new Book(1, "Crime and Punishment", getDbAuthors().get(0), getDbGenres().get(0)),
-                new Book(2, "A Wizard of Earthsea", getDbAuthors().get(1), getDbGenres().get(1)),
-                new Book(3, "Labyrinth of Reflections", getDbAuthors().get(2), getDbGenres().get(2))
+                new Book(1, "Crime and Punishment", dbAuthors.get(0), dbGenres.get(0)),
+                new Book(2, "A Wizard of Earthsea", dbAuthors.get(1), dbGenres.get(1)),
+                new Book(3, "Labyrinth of Reflections",dbAuthors.get(2), dbGenres.get(2))
         );
     }
 
