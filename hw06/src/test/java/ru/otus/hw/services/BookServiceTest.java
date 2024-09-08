@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_CLASS;
 
 @DisplayName("Сервис для работы с книгами ")
 @Import({BookServiceImpl.class,
@@ -55,8 +56,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         GenreMapperImpl.class,
         CommentMapperImpl.class
 })
-@Transactional
-@Rollback
+@Transactional(propagation = Propagation.NEVER)
 class BookServiceTest extends AbstractTest {
 
     @Autowired
@@ -75,7 +75,7 @@ class BookServiceTest extends AbstractTest {
         var expectedBook = new BookDto(dbBooks.size() + 1, "BookTitle_10",
                 authorMapper.toDto(dbAuthors.get(0)),
                 List.of(genreMapper.toDto(dbGenres.get(0)), genreMapper.toDto(dbGenres.get(1))));
-        var actualBook = bookService.insert("BookTitle_10", dbAuthors.get(0).getId(),
+        var actualBook = bookService.create("BookTitle_10", dbAuthors.get(0).getId(),
                 Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
         assertThat(actualBook)
                 .usingRecursiveComparison()
@@ -105,25 +105,31 @@ class BookServiceTest extends AbstractTest {
         assertThat(actualBook).isEmpty();
     }
 
-    @DisplayName("должен найти книгу по id")
-    @ParameterizedTest
-    @MethodSource("getDbBooks")
-    void shouldFindBookById(Book expectedBookDto) {
-        var actualBookDto = bookService.findById(expectedBookDto.getId());
+    @Nested
+    @DirtiesContext(classMode = BEFORE_CLASS)
+    class BookServiceFindTest {
+        @DisplayName("должен найти книгу по id")
+        @ParameterizedTest
+        @MethodSource("ru.otus.hw.services.BookServiceTest#getDbBooks")
+        void shouldFindBookById(Book expectedBook) {
+            var actualBookDto = bookService.findById(expectedBook.getId());
 
-        assertThat(actualBookDto).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .ignoringExpectedNullFields()
-                .isEqualTo(bookMapper.toDto(expectedBookDto));
-    }
+            assertThat(actualBookDto).isPresent()
+                    .get()
+                    .usingRecursiveComparison()
+                    .ignoringExpectedNullFields()
+                    .isEqualTo(bookMapper.toDto(expectedBook));
+        }
 
-    @DisplayName("должен найти все книги")
-    @Test
-    void shouldFindAllBooks() {
-        var actualBooks = bookService.findAll();
-        assertThat(actualBooks)
-                .isNotEmpty()
-                .hasSize(3);
+        @DisplayName("должен найти все книги")
+        @Test
+        void shouldFindAllBooks() {
+            var actualBooks = bookService.findAll().stream().map(bookMapper::toEntity).toList();
+            assertThat(actualBooks)
+                    .isNotEmpty()
+                    .hasSize(dbBooks.size())
+                    .usingRecursiveComparison()
+                    .isEqualTo(dbBooks);
+        }
     }
 }

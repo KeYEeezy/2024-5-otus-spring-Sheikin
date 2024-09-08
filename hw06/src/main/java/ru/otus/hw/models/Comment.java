@@ -10,13 +10,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
-@EqualsAndHashCode
+import java.util.Objects;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
@@ -37,4 +40,20 @@ public class Comment {
     @ToString.Exclude
     private Book book;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Comment comment)) {
+            return false;
+        }
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

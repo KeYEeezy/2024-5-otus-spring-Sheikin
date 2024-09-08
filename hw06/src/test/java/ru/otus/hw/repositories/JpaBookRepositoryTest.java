@@ -11,6 +11,7 @@ import ru.otus.hw.AbstractTest;
 import ru.otus.hw.models.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.array;
 
 @DisplayName("Репозиторий на основе JPA для работы с книгами ")
 @Import({JpaBookRepository.class})
@@ -60,11 +61,6 @@ class JpaBookRepositoryTest extends AbstractTest {
     @Test
     void shouldSaveUpdatedBook() {
         var expectedBook = new Book(1L, "BookTitle_10500", dbAuthors.get(2), dbGenres);
-
-        assertThat(repository.findById(expectedBook.getId()))
-                .isPresent()
-                .get()
-                .isNotEqualTo(expectedBook);
 
         var returnedBook = repository.save(expectedBook);
         assertThat(returnedBook).isNotNull()

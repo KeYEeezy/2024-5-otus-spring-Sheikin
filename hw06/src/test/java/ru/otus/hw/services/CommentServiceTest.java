@@ -26,8 +26,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
         JpaBookRepository.class,
         CommentMapperImpl.class,
         CommentConverter.class})
-@Transactional
-@Rollback
+@Transactional(propagation = Propagation.NEVER)
 class CommentServiceTest extends AbstractTest {
 
     @Autowired
@@ -36,7 +35,7 @@ class CommentServiceTest extends AbstractTest {
     @DisplayName("должен добавлять новый комментарий")
     @Test
     void shouldAddNewComment() {
-        var actualComment = commentService.insert("Some comment", 1L);
+        var actualComment = commentService.create("Some comment", 1L);
         var expectedComment = commentService.findById(actualComment.getId());
         assertAll(
                 () -> assertThat(actualComment).isNotNull(),

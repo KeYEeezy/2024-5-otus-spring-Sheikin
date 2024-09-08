@@ -66,11 +66,6 @@ class JpaCommentRepositoryTest extends AbstractTest {
         var expectedComment = dbComments.get(0);
         expectedComment.setText("New Comment");
 
-        assertThat(repository.findById(expectedComment.getId()))
-                .isPresent()
-                .get()
-                .isNotEqualTo(expectedComment);
-
         var returnedComment = repository.save(expectedComment);
         assertThat(returnedComment).isNotNull()
                 .matches(comment -> comment.getId() > 0)

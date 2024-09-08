@@ -3,7 +3,6 @@ package ru.otus.hw;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
@@ -52,7 +51,7 @@ public abstract class AbstractTest {
         return List.of(
                 new Book(1, "Crime and Punishment", dbAuthors.get(0), List.of(dbGenres.get(0))),
                 new Book(2, "A Wizard of Earthsea", dbAuthors.get(1), List.of(dbGenres.get(1))),
-                new Book(3, "Labyrinth of Reflections", dbAuthors.get(2), List.of(dbGenres.get(1), dbGenres.get(2)))
+                new Book(3, "Labyrinth of Reflections", dbAuthors.get(2), List.of(dbGenres.get(2), dbGenres.get(1)))
         );
     }
 

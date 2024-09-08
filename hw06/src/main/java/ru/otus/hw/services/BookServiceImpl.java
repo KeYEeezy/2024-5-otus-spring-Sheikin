@@ -56,27 +56,27 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDto insert(String title, long authorId, Set<Long> genreIds) {
-        return bookMapper.toDto(save(0, title, authorId, genreIds));
+    public BookDto create(String title, long authorId, Set<Long> genreIds) {
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("AuthorDto with id %d not found".formatted(authorId)));
+        var genres = genreRepository.findByIds(genreIds);
+        var book = new Book(0, title, author, genres); // id = 0 для новой книги
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
     @Transactional
     public BookDto update(long id, String title, long authorId, Set<Long> genreIds) {
-        return bookMapper.toDto(save(id, title, authorId, genreIds));
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("AuthorDto with id %d not found".formatted(authorId)));
+        var genres = genreRepository.findByIds(genreIds);
+        var book = new Book(id, title, author, genres);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
     @Transactional
     public void deleteById(long id) {
         bookRepository.deleteById(id);
-    }
-
-    private Book save(long id, String title, long authorId, Set<Long> genreIds) {
-        var author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException("AuthorDto with id %d not found".formatted(authorId)));
-        var genres = genreRepository.findByIds(genreIds);
-        var book = new Book(id, title, author, genres);
-        return bookRepository.save(book);
     }
 }
