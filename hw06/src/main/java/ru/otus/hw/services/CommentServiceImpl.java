@@ -58,10 +58,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto update(long id, String text, long bookId) {
+    public CommentDto update(long commentId, String text, long bookId) {
+        var comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment with id %d not found".formatted(commentId)));
         var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
-        var comment = new Comment(id, text, book);
+        comment.setText(text);
+        comment.setBook(book);
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
