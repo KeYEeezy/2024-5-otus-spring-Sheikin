@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@ToString
+@EqualsAndHashCode(exclude = "book")
+@ToString(exclude = "book")
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -36,24 +36,5 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Book book;
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Comment comment)) {
-            return false;
-        }
-        return id == comment.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

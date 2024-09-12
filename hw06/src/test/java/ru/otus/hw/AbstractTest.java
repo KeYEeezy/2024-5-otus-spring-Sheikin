@@ -33,25 +33,25 @@ public abstract class AbstractTest {
 
     public static List<Author> getDbAuthors() {
         return List.of(
-                new Author(1, "Fyodor Dostoevsky"),
-                new Author(2, "Ursula Kroeber Le Guin"),
-                new Author(3, "Sergei Lukyanenko")
+                new Author(1L, "Fyodor Dostoevsky"),
+                new Author(2L, "Ursula Kroeber Le Guin"),
+                new Author(3L, "Sergei Lukyanenko")
         );
     }
 
     public static List<Genre> getDbGenres() {
         return List.of(
-                new Genre(1, "Novel"),
-                new Genre(2, "Fantasy"),
-                new Genre(3, "SciFi")
+                new Genre(1L, "Novel"),
+                new Genre(2L, "Fantasy"),
+                new Genre(3L, "SciFi")
         );
     }
 
     public static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return List.of(
-                new Book(1, "Crime and Punishment", dbAuthors.get(0), List.of(dbGenres.get(0))),
-                new Book(2, "A Wizard of Earthsea", dbAuthors.get(1), List.of(dbGenres.get(1))),
-                new Book(3, "Labyrinth of Reflections", dbAuthors.get(2), List.of(dbGenres.get(2), dbGenres.get(1)))
+                new Book(1L, "Crime and Punishment", dbAuthors.get(0), List.of(dbGenres.get(0))),
+                new Book(2L, "A Wizard of Earthsea", dbAuthors.get(1), List.of(dbGenres.get(1))),
+                new Book(3L, "Labyrinth of Reflections", dbAuthors.get(2), List.of(dbGenres.get(1), dbGenres.get(2)))
         );
     }
 

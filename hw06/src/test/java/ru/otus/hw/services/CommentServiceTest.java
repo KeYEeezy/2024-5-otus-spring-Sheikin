@@ -4,10 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.AbstractTest;
@@ -49,7 +47,7 @@ class CommentServiceTest extends AbstractTest {
     @Test
     void shouldUpdateComment() {
         var comment = commentService.findById(1L);
-        var actualComment = commentService.update(comment.get().getId(), "New comment", 1L);
+        var actualComment = commentService.update(comment.get().getId(), "New comment");
         var expectedComment = commentService.findById(1L);
         assertAll(
                 () -> assertThat(actualComment).isNotNull(),

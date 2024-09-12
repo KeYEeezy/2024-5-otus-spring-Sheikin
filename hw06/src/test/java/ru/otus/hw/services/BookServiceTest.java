@@ -1,30 +1,20 @@
 package ru.otus.hw.services;
 
-import org.apache.commons.collections4.ListUtils;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.AbstractTest;
 import ru.otus.hw.converters.AuthorConverter;
 import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.converters.GenreConverter;
-import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.dto.BookDto;
-import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.AuthorMapperImpl;
 import ru.otus.hw.mappers.BookMapper;
@@ -113,12 +103,12 @@ class BookServiceTest extends AbstractTest {
         @MethodSource("ru.otus.hw.services.BookServiceTest#getDbBooks")
         void shouldFindBookById(Book expectedBook) {
             var actualBookDto = bookService.findById(expectedBook.getId());
-
+            var dtoExpectedBook = bookMapper.toDto(expectedBook);
             assertThat(actualBookDto).isPresent()
                     .get()
                     .usingRecursiveComparison()
                     .ignoringExpectedNullFields()
-                    .isEqualTo(bookMapper.toDto(expectedBook));
+                    .isEqualTo(dtoExpectedBook);
         }
 
         @DisplayName("должен найти все книги")

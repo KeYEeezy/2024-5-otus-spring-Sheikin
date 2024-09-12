@@ -7,18 +7,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = "fullName")
 @ToString
 @Table(name = "authors")
 public class Author {
@@ -29,20 +30,4 @@ public class Author {
 
     @Column(name = "full_name")
     private String fullName;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Author author)) {
-            return false;
-        }
-        return id == author.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
