@@ -63,10 +63,10 @@ public abstract class AbstractTest {
 
     public static List<Comment> getDbComments(List<Book> books) {
         return List.of(
-                new Comment(1, "Comment_1", books.get(0)),
-                new Comment(2, "Comment_2", books.get(0)),
-                new Comment(3, "Comment_3", books.get(1)),
-                new Comment(4, "Comment_4", books.get(2))
+                new Comment(1L, "Comment_1", books.get(0)),
+                new Comment(2L, "Comment_2", books.get(0)),
+                new Comment(3L, "Comment_3", books.get(1)),
+                new Comment(4L, "Comment_4", books.get(2))
         );
     }
     private static List<Comment> getDbComments() {

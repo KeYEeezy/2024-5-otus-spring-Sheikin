@@ -65,7 +65,7 @@ public class BookServiceImpl implements BookService {
             throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genreIds));
         }
 
-        var book = new Book(0, title, author, genres);
+        var book = new Book(0L, title, author, genres);
 
         return bookMapper.toDto(bookRepository.save(book));
     }

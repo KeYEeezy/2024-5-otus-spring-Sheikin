@@ -5,16 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.hw.AbstractTest;
 import ru.otus.hw.models.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.array;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @DisplayName("Репозиторий на основе JPA для работы с книгами ")
 @Import({JpaBookRepository.class})
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class JpaBookRepositoryTest extends AbstractTest {
 
     @Autowired
@@ -43,10 +44,10 @@ class JpaBookRepositoryTest extends AbstractTest {
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBook = new Book(0, "BookTitle_10500", dbAuthors.get(0), dbGenres);
-        var returnedBook = repository.save(expectedBook);
+        Book expectedBook = new Book(null, "BookTitle_10500", dbAuthors.get(0), dbGenres);
+        Book returnedBook = repository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
-                .matches(book -> book.getId() > 0)
+                .matches(book -> book.getId() > 0L)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedBook);
@@ -64,7 +65,7 @@ class JpaBookRepositoryTest extends AbstractTest {
 
         var returnedBook = repository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
-                .matches(book -> book.getId() > 0)
+                .matches(book -> book.getId() > 0L)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
 
         assertThat(repository.findById(returnedBook.getId()))
