@@ -21,7 +21,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = "book")
+@ToString(of = {"id", "text"})
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")

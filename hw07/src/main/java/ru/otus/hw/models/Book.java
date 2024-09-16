@@ -29,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"author", "genres"})
+@ToString(of = {"id", "title"})
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "book-graph", attributeNodes = {@NamedAttributeNode("author")})
