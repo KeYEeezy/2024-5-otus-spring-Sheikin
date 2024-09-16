@@ -20,8 +20,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "book")
-@ToString(exclude = "book")
+@EqualsAndHashCode(of = "id")
+@ToString(of = {"id", "text"})
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -29,7 +29,7 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "text")
     private String text;

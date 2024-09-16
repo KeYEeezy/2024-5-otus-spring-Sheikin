@@ -28,8 +28,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"author", "genres"})
-@ToString(exclude = {"author", "genres"})
+@EqualsAndHashCode(of = "id")
+@ToString(of = {"id", "title"})
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "book-graph", attributeNodes = {@NamedAttributeNode("author")})
@@ -37,7 +37,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "title")
     private String title;
