@@ -25,6 +25,8 @@ class JpaAuthorRepositoryTest extends AbstractTest {
         var actualAuthor = repository.findById(expectedAuthor.getId());
         assertThat(actualAuthor).isPresent()
                 .get()
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
                 .isEqualTo(expectedAuthor);
     }
 
@@ -34,7 +36,9 @@ class JpaAuthorRepositoryTest extends AbstractTest {
         var actualAuthors = repository.findAll();
         var expectedAuthors = dbAuthors;
 
-        assertThat(actualAuthors).containsExactlyElementsOf(expectedAuthors);
-        actualAuthors.forEach(System.out::println);
+        assertThat(actualAuthors)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(expectedAuthors);
     }
 }

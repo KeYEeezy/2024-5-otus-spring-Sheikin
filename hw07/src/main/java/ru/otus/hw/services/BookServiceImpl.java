@@ -1,6 +1,6 @@
 package ru.otus.hw.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final AuthorRepository authorRepository;
@@ -26,17 +27,6 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     private final BookMapper bookMapper;
-
-    @Autowired
-    public BookServiceImpl(AuthorRepository authorRepository,
-                           GenreRepository genreRepository,
-                           BookRepository bookRepository,
-                           BookMapper bookMapper) {
-        this.authorRepository = authorRepository;
-        this.genreRepository = genreRepository;
-        this.bookRepository = bookRepository;
-        this.bookMapper = bookMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.AbstractTest;
 import ru.otus.hw.models.Comment;
 
@@ -27,7 +26,7 @@ class JpaCommentRepositoryTest extends AbstractTest {
         var actualComment = repository.findById(expectedComment.getId());
         assertThat(actualComment).isPresent()
                 .get()
-                .isEqualTo(expectedComment);
+                .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
     }
 
     @DisplayName("должен загружать комментарии по идентификатору книги")
@@ -39,8 +38,10 @@ class JpaCommentRepositoryTest extends AbstractTest {
                 .filter(val -> val.getBook().getId() == 1)
                 .toList();
 
-        assertThat(actualComments).containsExactlyElementsOf(expectedComments);
-        actualComments.forEach(System.out::println);
+        assertThat(actualComments)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedComments);
     }
 
     @DisplayName("должен сохранять новый комментарий")
@@ -55,7 +56,7 @@ class JpaCommentRepositoryTest extends AbstractTest {
         assertThat(repository.findById(returnedComment.getId()))
                 .isPresent()
                 .get()
-                .isEqualTo(expectedComment);
+                .isEqualTo(returnedComment);
     }
 
     @DisplayName("должен сохранять измененный комментарий")

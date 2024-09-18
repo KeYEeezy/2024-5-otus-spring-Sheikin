@@ -1,6 +1,6 @@
 package ru.otus.hw.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.CommentDto;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -21,15 +22,6 @@ public class CommentServiceImpl implements CommentService {
     private final BookRepository bookRepository;
 
     private final CommentMapper commentMapper;
-
-    @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository,
-                              BookRepository bookRepository,
-                              CommentMapper commentMapper) {
-        this.commentRepository = commentRepository;
-        this.bookRepository = bookRepository;
-        this.commentMapper = commentMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

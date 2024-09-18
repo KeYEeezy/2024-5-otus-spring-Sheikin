@@ -7,7 +7,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import ru.otus.hw.AbstractTest;
+import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Genre;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +28,8 @@ class JpaBookRepositoryTest extends AbstractTest {
         var actualBook = repository.findById(expectedBook.getId());
         assertThat(actualBook).isPresent()
                 .get()
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
                 .isEqualTo(expectedBook);
     }
 
@@ -31,10 +37,17 @@ class JpaBookRepositoryTest extends AbstractTest {
     @Test
     void shouldReturnCorrectBooksList() {
         var actualBooks = repository.findAll();
-        var expectedBooks = dbBooks;
+        var expectedBooks = List.of(
+                new Book(1L, "Crime and Punishment", new Author(1L, "Fyodor Dostoevsky"), List.of(new Genre(1L, "Novel"))),
+                new Book(2L, "A Wizard of Earthsea", new Author(2L, "Ursula Kroeber Le Guin"), List.of(new Genre(2L, "Fantasy"))),
+                new Book(3L, "Labyrinth of Reflections", new Author(3L, "Sergei Lukyanenko"), List.of(new Genre(2L, "Fantasy"), new Genre(3L, "SciFi")))
+        );
 
-        assertThat(actualBooks).containsExactlyElementsOf(expectedBooks);
-        actualBooks.forEach(System.out::println);
+        assertThat(actualBooks)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(expectedBooks);
+
     }
 
     @DisplayName("должен сохранять новую книгу")

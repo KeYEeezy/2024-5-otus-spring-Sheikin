@@ -101,7 +101,7 @@ class BookServiceTest extends AbstractTest {
             assertThat(actualBookDto).isPresent()
                     .get()
                     .usingRecursiveComparison()
-                    .ignoringExpectedNullFields()
+                    .ignoringCollectionOrder()
                     .isEqualTo(dtoExpectedBook);
         }
 
