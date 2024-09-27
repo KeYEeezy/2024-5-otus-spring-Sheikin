@@ -41,6 +41,6 @@ public class DatabaseChangelog {
         commentRepository.save(new Comment("1", "Comment_1", book1));
         commentRepository.save(new Comment("2", "Comment_2", book1));
         commentRepository.save(new Comment("3", "Comment_3", book2));
-        commentRepository.save(new Comment("4", "Comment_4cbid 2", book3));
+        commentRepository.save(new Comment("4", "Comment_4", book3));
     }
 }
