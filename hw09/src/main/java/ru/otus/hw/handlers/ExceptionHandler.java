@@ -1,14 +1,13 @@
-package ru.otus.hw.controllers;
+package ru.otus.hw.handlers;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 
 @ControllerAdvice
-public class ExeptionController {
+public class ExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)
     public ModelAndView handleEntityNotFoundException(EntityNotFoundException ex) {
         String message = ex.getMessage();
         ModelAndView modelAndView = new ModelAndView();
