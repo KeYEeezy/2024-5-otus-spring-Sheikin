@@ -1,5 +1,6 @@
 package ru.otus.hw.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.dto.BookEditDto;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentService;
@@ -51,8 +53,8 @@ public class BookController {
     }
 
     @PostMapping("/create")
-    public String addBook(@ModelAttribute BookDto bookDto) {
-        bookService.create(bookDto.getTitle(), bookDto.getAuthorId(), bookDto.getGenreIds());
+    public String addBook(@Valid @ModelAttribute(name = "book") BookEditDto book) {
+        bookService.create(book.getTitle(), book.getAuthorId(), book.getGenreIds());
         return "redirect:/";
     }
 
@@ -69,7 +71,7 @@ public class BookController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editBook(@PathVariable("id") String bookId, @ModelAttribute BookDto book) {
+    public String editBook(@Valid @ModelAttribute(name = "book") BookEditDto book, @PathVariable("id") String bookId) {
         book.setId(bookId);
         bookService.update(bookId, book.getTitle(), book.getAuthorId(), book.getGenreIds());
         return "redirect:/";

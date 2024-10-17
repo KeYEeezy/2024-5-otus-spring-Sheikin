@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.dto.BookEditDto;
 import ru.otus.hw.dto.CommentDto;
 import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.services.AuthorService;
@@ -71,7 +72,7 @@ class BookControllerTest {
         dbAuthors = getDbAuthors();
         dbGenres = getDbGenres();
         books = getDbBooks(dbAuthors, dbGenres);
-        dbComments = getDbComments(books);
+        dbComments = getDbComments();
     }
 
 
@@ -99,23 +100,13 @@ class BookControllerTest {
         );
     }
 
-    public static List<BookDto> getDbBooks() {
-        var dbAuthors = getDbAuthors();
-        var dbGenres = getDbGenres();
-        return getDbBooks(dbAuthors, dbGenres);
-    }
-
-    public static List<CommentDto> getDbComments(List<BookDto> books) {
+    public static List<CommentDto> getDbComments() {
         return List.of(
-                new CommentDto("1", "Comment_1", books.get(0)),
-                new CommentDto("2", "Comment_2", books.get(0)),
-                new CommentDto("3", "Comment_3", books.get(1)),
-                new CommentDto("4", "Comment_4", books.get(2))
+                new CommentDto("1", "Comment_1"),
+                new CommentDto("2", "Comment_2"),
+                new CommentDto("3", "Comment_3"),
+                new CommentDto("4", "Comment_4")
         );
-    }
-    private static List<CommentDto> getDbComments() {
-        var books = getDbBooks(getDbAuthors(), getDbGenres());
-        return getDbComments(books);
     }
 
     @Test
@@ -146,10 +137,6 @@ class BookControllerTest {
     @Test
     void editBook() throws Exception {
         var book = books.stream().filter(val -> val.getId().equals("2")).findFirst();
-        var bookEditDto = new BookDto(book.get().getId(),
-                book.get().getTitle(),
-                Collections.singleton(book.get().getGenres().get(0).getId()),
-                book.get().getAuthor().getId());
 
         given(authorService.findAll()).willReturn(dbAuthors);
         given(genreService.findAll()).willReturn(dbGenres);
@@ -170,12 +157,12 @@ class BookControllerTest {
     void updateBook() throws Exception {
         var author = dbAuthors.stream().filter(val -> val.getId().equals("2")).findFirst().get();
         var genre = dbGenres.stream().filter(val -> val.getId().equals("2")).findFirst().get();
-        var request = new BookDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
+        var request = new BookEditDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
         var bookDto = new BookDto(request.getId(), request.getTitle(), author, List.of(genre));
 
         given(bookService.update(anyString(), anyString(), anyString(), anySet())).willReturn(bookDto);
 
-        mockMvc.perform(post("/edit/10").flashAttr("book", bookDto))
+        mockMvc.perform(post("/edit/10").flashAttr("book", request))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/"));
     }
@@ -184,7 +171,7 @@ class BookControllerTest {
     void saveBookInsert() throws Exception {
         var author = dbAuthors.stream().filter(val -> val.getId().equals("2")).findFirst().get();
         var genre = dbGenres.stream().filter(val -> val.getId().equals("1")).findFirst().get();
-        var request = new BookDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
+        var request = new BookEditDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
         var bookDto = new BookDto(request.getId(), request.getTitle(), author, List.of(genre));
 
         var newBooks = new ArrayList<>(books);
@@ -193,7 +180,7 @@ class BookControllerTest {
         given(bookService.create(anyString(), anyString(), anySet())).willReturn(bookDto);
         given(bookService.findAll()).willReturn(newBooks);
 
-        mockMvc.perform(post("/create"))
+        mockMvc.perform(post("/create").flashAttr("book", request))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/"));
     }
