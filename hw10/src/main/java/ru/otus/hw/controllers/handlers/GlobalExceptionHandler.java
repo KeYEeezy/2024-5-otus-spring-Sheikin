@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception ex) {
-        ErrorDto errorDto = new ErrorDto(500, "Internal server error");
+        ErrorDto errorDto = new ErrorDto(500, ex.getMessage());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("errorDto", errorDto);
         modelAndView.setViewName("error/error");
