@@ -23,8 +23,9 @@ import ru.otus.hw.services.GenreService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -146,7 +147,7 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/edit"))
                 .andExpect(model().attributeExists("book"))
-                .andExpect(model().attribute("book", book.get()))
+                .andExpect(model().attribute("book", createEditDto(book.get())))
                 .andExpect(model().attributeExists("authors"))
                 .andExpect(model().attribute("authors", dbAuthors))
                 .andExpect(model().attributeExists("genres"))
@@ -160,7 +161,7 @@ class BookControllerTest {
         var request = new BookEditDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
         var bookDto = new BookDto(request.getId(), request.getTitle(), author, List.of(genre));
 
-        given(bookService.update(anyString(), anyString(), anyString(), anySet())).willReturn(bookDto);
+        when(bookService.update(any(BookEditDto.class))).thenReturn(bookDto);
 
         mockMvc.perform(post("/edit/10").flashAttr("book", request))
                 .andExpect(status().isFound())
@@ -177,7 +178,7 @@ class BookControllerTest {
         var newBooks = new ArrayList<>(books);
         newBooks.add(bookDto);
 
-        given(bookService.create(anyString(), anyString(), anySet())).willReturn(bookDto);
+        when(bookService.create(any(BookEditDto.class))).thenReturn(bookDto);
         given(bookService.findAll()).willReturn(newBooks);
 
         mockMvc.perform(post("/create").flashAttr("book", request))
@@ -192,5 +193,14 @@ class BookControllerTest {
         mockMvc.perform(post("/delete/{id}", 1L))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/"));
+    }
+
+    private BookEditDto createEditDto(BookDto bookDto) {
+        return BookEditDto.builder()
+                .id(bookDto.getId())
+                .authorId(bookDto.getAuthor().getId())
+                .title(bookDto.getTitle())
+                .genreIds(bookDto.getGenres().stream().map(GenreDto::getId).collect(Collectors.toSet()))
+                .build();
     }
 }

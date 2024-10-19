@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookEditDto;
+import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentService;
 import ru.otus.hw.services.GenreService;
+
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,18 +46,17 @@ public class BookController {
 
     @GetMapping("/create")
     public String addBook(Model model) {
-
         var authors = authorService.findAll();
         var genres = genreService.findAll();
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
-        model.addAttribute("book", BookDto.builder().build());
+        model.addAttribute("book", BookEditDto.builder().build());
         return "book/create";
     }
 
     @PostMapping("/create")
-    public String addBook(@Valid @ModelAttribute(name = "book") BookEditDto book) {
-        bookService.create(book.getTitle(), book.getAuthorId(), book.getGenreIds());
+    public String addBook(@Valid @ModelAttribute(name = "book") BookEditDto bookEditDto) {
+        bookService.create(bookEditDto);
         return "redirect:/";
     }
 
@@ -63,17 +65,15 @@ public class BookController {
         var book = bookService.findById(bookId).orElseThrow();
         var authors = authorService.findAll();
         var genres = genreService.findAll();
-        model.addAttribute("book", book);
+        model.addAttribute("book", createEditDto(book));
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
-
         return "book/edit";
     }
 
     @PostMapping("/edit/{id}")
-    public String editBook(@Valid @ModelAttribute(name = "book") BookEditDto book, @PathVariable("id") String bookId) {
-        book.setId(bookId);
-        bookService.update(bookId, book.getTitle(), book.getAuthorId(), book.getGenreIds());
+    public String editBook(@Valid @ModelAttribute(name = "book") BookEditDto bookEditDto) {
+        bookService.update(bookEditDto);
         return "redirect:/";
     }
 
@@ -81,5 +81,14 @@ public class BookController {
     public String deleteBook(@PathVariable("id") String bookId) {
         bookService.deleteById(bookId);
         return "redirect:/";
+    }
+
+    private BookEditDto createEditDto(BookDto bookDto) {
+        return BookEditDto.builder()
+                .id(bookDto.getId())
+                .authorId(bookDto.getAuthor().getId())
+                .title(bookDto.getTitle())
+                .genreIds(bookDto.getGenres().stream().map(GenreDto::getId).collect(Collectors.toSet()))
+                .build();
     }
 }

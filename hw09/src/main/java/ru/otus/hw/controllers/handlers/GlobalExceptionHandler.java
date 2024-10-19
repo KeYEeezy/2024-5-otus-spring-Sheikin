@@ -1,21 +1,29 @@
 package ru.otus.hw.controllers.handlers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
+import ru.otus.hw.dto.ErrorDto;
 import ru.otus.hw.exceptions.NotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
-        return new ResponseEntity<>("Book not found: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ModelAndView handleNotFoundException(NotFoundException ex) {
+        ErrorDto errorDto = new ErrorDto(404, ex.getMessage());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("errorDto", errorDto);
+        modelAndView.setViewName("error/entitynotfound");
+        return modelAndView;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleEntityNotFoundException(Exception ex) {
-        return new ResponseEntity<>("Something went wrong: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ModelAndView handleException(Exception ex) {
+        ErrorDto errorDto = new ErrorDto(500, "Internal server error");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("errorDto", errorDto);
+        modelAndView.setViewName("error/entitynotfound");
+        return modelAndView;
     }
 }

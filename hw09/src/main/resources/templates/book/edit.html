@@ -21,7 +21,7 @@
             <label for="author" class="form-label">Author</label>
             <select th:field="*{authorId}" id="author" class="form-select" required>
                 <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}"
-                        th:selected="${author.id == book.author.id}"></option>
+                        th:selected="${author.id == book.authorId}"></option>
             </select>
         </div>
 
@@ -29,7 +29,7 @@
             <label class="form-label">Genres</label><br/>
             <div th:each="genre : ${genres}" class="form-check">
                 <input type="checkbox" th:field="*{genreIds}" th:value="${genre.id}"
-                       th:checked="${book.genres.contains(genre)}" id="genre__${genre.id}" class="form-check-input"/>
+                       th:checked="${book.getGenreIds().contains(genre.id)}" id="genre__${genre.id}" class="form-check-input"/>
                 <label th:for="'genre__' + ${genre.id}" th:text="${genre.name}" class="form-check-label"></label>
             </div>
         </div>

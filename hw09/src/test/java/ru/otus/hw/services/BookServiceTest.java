@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.AbstractTest;
 import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.dto.BookEditDto;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.AuthorMapperImpl;
 import ru.otus.hw.mappers.BookMapper;
@@ -56,8 +57,11 @@ class BookServiceTest extends AbstractTest {
         var expectedBook = new BookDto("4", "BookTitle_10",
                 authorMapper.toDto(dbAuthors.get(0)),
                 List.of(genreMapper.toDto(dbGenres.get(0)), genreMapper.toDto(dbGenres.get(1))));
-        var actualBook = bookService.create("BookTitle_10", dbAuthors.get(0).getId(),
-                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
+        var editDto = new BookEditDto(null, "BookTitle_10",
+                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()),
+                dbAuthors.get(0).getId());
+
+        var actualBook = bookService.create(editDto);
         assertThat(actualBook)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -68,8 +72,11 @@ class BookServiceTest extends AbstractTest {
     @DisplayName("должен обновлять книгу")
     @Test
     void shouldUpdateBook() {
-        var actualBook = bookService.update("1", "BookTitle_10", dbAuthors.get(0).getId(),
-                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()));
+        var editDto = new BookEditDto("1", "BookTitle_10",
+                Set.of(dbGenres.get(0).getId(), dbGenres.get(1).getId()),
+                dbAuthors.get(0).getId());
+
+        var actualBook = bookService.update(editDto);
         var expectedBook = new BookDto("1", "BookTitle_10",
                 authorMapper.toDto(dbAuthors.get(0)),
                 List.of(genreMapper.toDto(dbGenres.get(0)), genreMapper.toDto(dbGenres.get(1))));
