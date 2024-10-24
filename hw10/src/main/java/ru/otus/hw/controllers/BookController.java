@@ -41,10 +41,6 @@ public class BookController {
 
     @GetMapping("/create")
     public String addBook(Model model) {
-        var authors = authorService.findAll();
-        var genres = genreService.findAll();
-        model.addAttribute("authors", authors);
-        model.addAttribute("genres", genres);
         model.addAttribute("book", BookCreateDto.builder().build());
         return "book/create";
     }
@@ -57,18 +53,12 @@ public class BookController {
 
     @GetMapping("/edit/{id}")
     public String updateBook(@PathVariable("id") String bookId, Model model) {
-        var book = bookService.findById(bookId).orElseThrow();
-        var authors = authorService.findAll();
-        var genres = genreService.findAll();
-        model.addAttribute("book",  createEditDto(book));
-        model.addAttribute("authors", authors);
-        model.addAttribute("genres", genres);
-
+        model.addAttribute("bookId",  bookId);
         return "book/edit";
     }
 
     @PostMapping("/edit")
-    public String editBook(@Valid @ModelAttribute(name = "book") BookUpdateDto book) {
+    public String editBook(@ModelAttribute(name = "book") BookUpdateDto book) {
         bookService.update(book);
         return "redirect:/";
     }

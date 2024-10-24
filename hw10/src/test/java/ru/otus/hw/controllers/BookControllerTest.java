@@ -138,11 +138,7 @@ class BookControllerTest {
         mockMvc.perform(get("/create"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/create"))
-                .andExpect(model().attributeExists("authors"))
-                .andExpect(model().attributeExists("genres"))
-                .andExpect(model().attributeExists("book"))
-                .andExpect(model().attribute("authors", dbAuthors))
-                .andExpect(model().attribute("genres", dbGenres));
+                .andExpect(model().attributeExists("book"));
     }
 
     @Test
@@ -160,12 +156,7 @@ class BookControllerTest {
         mockMvc.perform(get("/edit/{id}", 2L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/edit"))
-                .andExpect(model().attributeExists("book"))
-                .andExpect(model().attribute("book", createEditDto(book.get())))
-                .andExpect(model().attributeExists("authors"))
-                .andExpect(model().attribute("authors", dbAuthors))
-                .andExpect(model().attributeExists("genres"))
-                .andExpect(model().attribute("genres", dbGenres));
+                .andExpect(model().attributeExists("bookId"));
     }
 
     @Test

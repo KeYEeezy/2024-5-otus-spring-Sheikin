@@ -68,6 +68,7 @@ public class BookController {
         model.addAttribute("book", createEditDto(book));
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
+        model.addAttribute("bookId", bookId);
         return "book/edit";
     }
 

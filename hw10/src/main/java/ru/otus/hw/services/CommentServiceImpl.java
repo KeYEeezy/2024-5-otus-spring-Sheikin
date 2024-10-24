@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.CommentDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.NotFoundException;
 import ru.otus.hw.mappers.CommentMapper;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
@@ -49,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentDto create(String text, String bookId) {
         var book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
+                .orElseThrow(() -> new NotFoundException("Book with id %s not found".formatted(bookId)));
         var comment = new Comment(null, text, book);
         return commentMapper.toDto(commentRepository.save(comment));
     }
@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentDto update(String commentId, String text) {
         var comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("Comment with id %d not found".formatted(commentId)));
+                .orElseThrow(() -> new NotFoundException("Comment with id %s not found".formatted(commentId)));
         comment.setText(text);
         return commentMapper.toDto(commentRepository.save(comment));
     }

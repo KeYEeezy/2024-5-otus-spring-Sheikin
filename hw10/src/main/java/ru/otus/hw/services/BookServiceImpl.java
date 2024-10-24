@@ -7,7 +7,7 @@ import org.springframework.util.CollectionUtils;
 import ru.otus.hw.dto.BookCreateDto;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookUpdateDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.NotFoundException;
 import ru.otus.hw.mappers.BookMapper;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
@@ -60,11 +60,11 @@ public class BookServiceImpl implements BookService {
         var title = editDto.getTitle();
 
         var author = authorRepository.findById(editDto.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
+                .orElseThrow(() -> new NotFoundException("Author with id %s not found".formatted(authorId)));
         var genres = genreRepository.findAllById(genreIds);
 
         if (CollectionUtils.isEmpty(genres) || genreIds.size() != genres.size()) {
-            throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genreIds));
+            throw new NotFoundException("One or all genres with ids %s not found".formatted(genreIds));
         }
 
         var book = new Book(null, title, author, genres);
@@ -79,14 +79,14 @@ public class BookServiceImpl implements BookService {
         var genreIds = editDto.getGenreIds();
         var title = editDto.getTitle();
         var book = bookRepository.findById(editDto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %s not found".formatted(editDto.getId())));
+                .orElseThrow(() -> new NotFoundException("Book with id %s not found".formatted(editDto.getId())));
 
         var author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
+                .orElseThrow(() -> new NotFoundException("Author with id %s not found".formatted(authorId)));
         var genres = genreRepository.findAllById(genreIds);
 
         if (CollectionUtils.isEmpty(genres) || genreIds.size() != genres.size()) {
-            throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genreIds));
+            throw new NotFoundException("One or all genres with ids %s not found".formatted(genreIds));
         }
 
         book.setTitle(title);
