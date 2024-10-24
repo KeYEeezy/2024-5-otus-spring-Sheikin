@@ -12,9 +12,7 @@ import ru.otus.hw.dto.BookCreateDto;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookUpdateDto;
 import ru.otus.hw.dto.GenreDto;
-import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
-import ru.otus.hw.services.GenreService;
 
 import java.util.stream.Collectors;
 
@@ -23,10 +21,6 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-
-    private final AuthorService authorService;
-
-    private final GenreService genreService;
 
     @GetMapping({"/"})
     public String getAllBooks() {
