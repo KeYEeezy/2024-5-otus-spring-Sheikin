@@ -143,7 +143,7 @@ class BookControllerTest {
 
     @Test
     void editBook() throws Exception {
-        var book = books.stream().filter(val -> val.getId().equals("2")).findFirst();
+        var book = books.stream().filter(val -> val.getId().equals("2")).findFirst().get();
 
         given(authorService.findAll()).willReturn(dbAuthors);
         given(genreService.findAll()).willReturn(dbGenres);

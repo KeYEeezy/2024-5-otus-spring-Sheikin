@@ -14,6 +14,7 @@ import ru.otus.hw.AbstractTest;
 import ru.otus.hw.dto.BookCreateDto;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookUpdateDto;
+import ru.otus.hw.exceptions.NotFoundException;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.AuthorMapperImpl;
 import ru.otus.hw.mappers.BookMapper;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_CLASS;
 
 @DisplayName("Сервис для работы с книгами ")
@@ -91,9 +93,7 @@ class BookServiceTest extends AbstractTest {
     @Test
     void shouldDeleteBookById() {
         bookService.deleteById("3");
-        var actualBook = bookService.findById("3");
-        var actualComments = commentRepository.findAll();
-        assertThat(actualBook).isEmpty();
+        assertThrows(NotFoundException.class, () -> bookService.findById("3"));
     }
 
     @Nested
@@ -105,8 +105,7 @@ class BookServiceTest extends AbstractTest {
         void shouldFindBookById(Book expectedBook) {
             var actualBookDto = bookService.findById(expectedBook.getId());
             var dtoExpectedBook = bookMapper.toDto(expectedBook);
-            assertThat(actualBookDto).isPresent()
-                    .get()
+            assertThat(actualBookDto)
                     .usingRecursiveComparison()
                     .ignoringExpectedNullFields()
                     .isEqualTo(dtoExpectedBook);
