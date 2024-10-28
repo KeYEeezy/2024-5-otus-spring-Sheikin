@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.dto.AuthorDto;
+import ru.otus.hw.dto.BookCreateDto;
 import ru.otus.hw.dto.BookDto;
-import ru.otus.hw.dto.BookEditDto;
+import ru.otus.hw.dto.BookUpdateDto;
 import ru.otus.hw.dto.CommentDto;
 import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.services.AuthorService;
@@ -73,7 +74,7 @@ class BookControllerTest {
         dbAuthors = getDbAuthors();
         dbGenres = getDbGenres();
         books = getDbBooks(dbAuthors, dbGenres);
-        dbComments = getDbComments();
+        dbComments = getDbComments(books);
     }
 
 
@@ -101,13 +102,23 @@ class BookControllerTest {
         );
     }
 
-    public static List<CommentDto> getDbComments() {
+    public static List<BookDto> getDbBooks() {
+        var dbAuthors = getDbAuthors();
+        var dbGenres = getDbGenres();
+        return getDbBooks(dbAuthors, dbGenres);
+    }
+
+    public static List<CommentDto> getDbComments(List<BookDto> books) {
         return List.of(
-                new CommentDto("1", "Comment_1"),
-                new CommentDto("2", "Comment_2"),
-                new CommentDto("3", "Comment_3"),
-                new CommentDto("4", "Comment_4")
+                new CommentDto("1", "Comment_1", books.get(0)),
+                new CommentDto("2", "Comment_2", books.get(0)),
+                new CommentDto("3", "Comment_3", books.get(1)),
+                new CommentDto("4", "Comment_4", books.get(2))
         );
+    }
+    private static List<CommentDto> getDbComments() {
+        var books = getDbBooks(getDbAuthors(), getDbGenres());
+        return getDbComments(books);
     }
 
     @Test
@@ -116,7 +127,6 @@ class BookControllerTest {
 
         mockMvc.perform(get("/"))
                 .andExpect(view().name("book/book"))
-                .andExpect(model().attribute("books", books))
                 .andExpect(status().isOk());
     }
 
@@ -128,16 +138,16 @@ class BookControllerTest {
         mockMvc.perform(get("/create"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/create"))
-                .andExpect(model().attributeExists("authors"))
-                .andExpect(model().attributeExists("genres"))
-                .andExpect(model().attributeExists("book"))
-                .andExpect(model().attribute("authors", dbAuthors))
-                .andExpect(model().attribute("genres", dbGenres));
+                .andExpect(model().attributeExists("book"));
     }
 
     @Test
     void editBook() throws Exception {
-        var book = books.stream().filter(val -> val.getId().equals("2")).findFirst();
+        var book = books.stream().filter(val -> val.getId().equals("2")).findFirst().get();
+
+        given(authorService.findAll()).willReturn(dbAuthors);
+        given(genreService.findAll()).willReturn(dbGenres);
+        given(bookService.findById(anyString())).willReturn(book);
 
         given(authorService.findAll()).willReturn(dbAuthors);
         given(genreService.findAll()).willReturn(dbGenres);
@@ -146,22 +156,17 @@ class BookControllerTest {
         mockMvc.perform(get("/edit/{id}", 2L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/edit"))
-                .andExpect(model().attributeExists("book"))
-                .andExpect(model().attribute("book", createEditDto(book.get())))
-                .andExpect(model().attributeExists("authors"))
-                .andExpect(model().attribute("authors", dbAuthors))
-                .andExpect(model().attributeExists("genres"))
-                .andExpect(model().attribute("genres", dbGenres));
+                .andExpect(model().attributeExists("bookId"));
     }
 
     @Test
     void updateBook() throws Exception {
         var author = dbAuthors.stream().filter(val -> val.getId().equals("2")).findFirst().get();
         var genre = dbGenres.stream().filter(val -> val.getId().equals("2")).findFirst().get();
-        var request = new BookEditDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
+        var request = new BookUpdateDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
         var bookDto = new BookDto(request.getId(), request.getTitle(), author, List.of(genre));
 
-        when(bookService.update(any(BookEditDto.class))).thenReturn(bookDto);
+        when(bookService.update(any(BookUpdateDto.class))).thenReturn(bookDto);
 
         mockMvc.perform(post("/edit").flashAttr("book", request))
                 .andExpect(status().isFound())
@@ -172,13 +177,13 @@ class BookControllerTest {
     void saveBookInsert() throws Exception {
         var author = dbAuthors.stream().filter(val -> val.getId().equals("2")).findFirst().get();
         var genre = dbGenres.stream().filter(val -> val.getId().equals("1")).findFirst().get();
-        var request = new BookEditDto("10", "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
-        var bookDto = new BookDto(request.getId(), request.getTitle(), author, List.of(genre));
+        var request = new BookCreateDto( "BookTitle_10", Collections.singleton(genre.getId()), author.getId());
+        var bookDto = new BookDto("10", request.getTitle(), author, List.of(genre));
 
         var newBooks = new ArrayList<>(books);
         newBooks.add(bookDto);
 
-        when(bookService.create(any(BookEditDto.class))).thenReturn(bookDto);
+        when(bookService.create(any(BookCreateDto.class))).thenReturn(bookDto);
         given(bookService.findAll()).willReturn(newBooks);
 
         mockMvc.perform(post("/create").flashAttr("book", request))
@@ -195,8 +200,8 @@ class BookControllerTest {
                 .andExpect(view().name("redirect:/"));
     }
 
-    private BookEditDto createEditDto(BookDto bookDto) {
-        return BookEditDto.builder()
+    private BookUpdateDto createEditDto(BookDto bookDto) {
+        return BookUpdateDto.builder()
                 .id(bookDto.getId())
                 .authorId(bookDto.getAuthor().getId())
                 .title(bookDto.getTitle())
