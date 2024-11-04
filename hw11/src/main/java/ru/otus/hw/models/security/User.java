@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Document(collection = "users")
 @Builder
-public class LibraryUser {
+public class User {
 
     @Id
     private String id;

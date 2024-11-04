@@ -7,7 +7,7 @@ import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.models.Genre;
-import ru.otus.hw.models.security.LibraryUser;
+import ru.otus.hw.models.security.User;
 import ru.otus.hw.models.security.Role;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
@@ -53,13 +53,13 @@ public class DatabaseChangelog {
         Role roleUser = new Role("1", "USER");
         Role roleAdmin = new Role("2", "ADMIN");
 
-        LibraryUser basicUser = LibraryUser.builder()
+        User basicUser = User.builder()
                 .id("1")
                 .username("user")
                 .password("$2a$10$KIcrlxYQTiejRpzkeoSsB.VVM3wgBiAFtpEzpuhEdChucrrPupuuW")
                 .roles(List.of(roleUser))
                 .build();
-        LibraryUser adminUser = LibraryUser.builder()
+        User adminUser = User.builder()
                 .id("2")
                 .username("admin")
                 .password("$2a$10$KIcrlxYQTiejRpzkeoSsB.VVM3wgBiAFtpEzpuhEdChucrrPupuuW")
