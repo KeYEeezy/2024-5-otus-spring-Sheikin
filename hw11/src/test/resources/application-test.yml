@@ -1,0 +1,18 @@
+spring:
+  data:
+    mongodb:
+      database: testdb
+  main:
+    allow-bean-definition-overriding: true
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package: ru.otus.hw.mongok.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2

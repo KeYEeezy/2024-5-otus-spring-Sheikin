@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDto {
+public class ErrorDto {
 
-    private String id;
+    private int statusCode;
 
-    private String text;
-
+    private String message;
 }
